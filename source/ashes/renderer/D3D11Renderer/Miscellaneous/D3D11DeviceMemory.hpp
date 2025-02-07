@@ -5,6 +5,7 @@ See LICENSE file in root folder
 #pragma once
 
 #include "renderer/D3D11Renderer/D3D11RendererPrerequisites.hpp"
+#include "renderer/D3D11Renderer/Core/D3D11DeviceContextLock.hpp"
 
 #include <cassert>
 
@@ -37,7 +38,8 @@ namespace ashes::d3d11
 		void upload( uint8_t const * data
 			, UINT subresource
 			, VkDeviceSize offset
-			, VkDeviceSize size )const;
+			, VkDeviceSize size
+		    , const DeviceContextLock & context )const;
 		void download( uint8_t * data
 			, UINT subresource
 			, VkDeviceSize offset
@@ -80,7 +82,8 @@ namespace ashes::d3d11
 		void updateUpload( ObjectMemory const & memory
 			, VkDeviceSize offset
 			, VkDeviceSize size
-			, UINT subresource )const;
+			, UINT subresource
+		    , const DeviceContextLock & context )const;
 		void updateDownload( ObjectMemory const & memory
 			, VkDeviceSize offset
 			, VkDeviceSize size

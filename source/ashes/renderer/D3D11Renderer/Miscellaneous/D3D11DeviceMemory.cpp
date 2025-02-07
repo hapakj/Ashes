@@ -142,7 +142,8 @@ namespace ashes::d3d11
 	void ObjectMemory::upload( uint8_t const * data
 		, UINT subresource
 		, VkDeviceSize poffset
-		, VkDeviceSize psize )const
+		, VkDeviceSize psize
+	    , const DeviceContextLock & context )const
 	{
 		assert( subresource < subresources.size() );
 		auto & subresourceLayout = subresources[subresource];
@@ -160,7 +161,6 @@ namespace ashes::d3d11
 			copySize = allocateInfo.allocationSize - objectOffset;
 		}
 
-		auto context{ get( device )->getImmediateContext() };
 		D3D11_MAPPED_SUBRESOURCE mapped{};
 
 		if ( lock( *context, subresource, mapped ) == VK_SUCCESS )
@@ -632,7 +632,8 @@ namespace ashes::d3d11
 			};
 			m_objects.emplace_back( std::make_unique< ObjectMemory >( std::move( impl.memory ) ) );
 			objectMemory = m_objects.back().get();
-			updateUpload( *objectMemory, 0ULL, WholeSize, 0u );
+			auto context{ get( m_device )->getImmediateContext() };
+			updateUpload( *objectMemory, 0ULL, WholeSize, 0u, context );
 			result = VK_SUCCESS;
 		}
 		catch ( Exception & exc )
@@ -670,7 +671,8 @@ namespace ashes::d3d11
 			};
 			m_objects.emplace_back( std::make_unique< ObjectMemory >( std::move( impl.memory ) ) );
 			objectMemory = m_objects.back().get();
-			updateUpload( *objectMemory, 0ULL, WholeSize, 0u );
+			auto context{ get( m_device )->getImmediateContext() };
+			updateUpload( *objectMemory, 0ULL, WholeSize, 0u, context );
 			result = VK_SUCCESS;
 		}
 		catch ( Exception & exc )
@@ -708,7 +710,8 @@ namespace ashes::d3d11
 			};
 			m_objects.emplace_back( std::make_unique< ObjectMemory >( std::move( impl.memory ) ) );
 			objectMemory = m_objects.back().get();
-			updateUpload( *objectMemory, 0ULL, WholeSize, 0u );
+			auto context{ get( m_device )->getImmediateContext() };
+			updateUpload( *objectMemory, 0ULL, WholeSize, 0u, context );
 			result = VK_SUCCESS;
 		}
 		catch ( Exception & exc )
@@ -746,7 +749,8 @@ namespace ashes::d3d11
 			};
 			m_objects.emplace_back( std::make_unique< ObjectMemory >( std::move( impl.memory ) ) );
 			objectMemory = m_objects.back().get();
-			updateUpload( *objectMemory, 0ULL, WholeSize, 0u );
+			auto context{ get( m_device )->getImmediateContext() };
+			updateUpload( *objectMemory, 0ULL, WholeSize, 0u, context );
 			result = VK_SUCCESS;
 		}
 		catch ( Exception & exc )
@@ -769,7 +773,8 @@ namespace ashes::d3d11
 	void DeviceMemory::updateUpload( ObjectMemory const & memory
 		, VkDeviceSize offset
 		, VkDeviceSize size
-		, UINT subresource )const
+		, UINT subresource
+	    , const DeviceContextLock & context )const
 	{
 		if ( !m_data.empty() )
 		{
@@ -778,7 +783,8 @@ namespace ashes::d3d11
 				, ( ( size == WholeSize && offset == 0u )
 					? 0u
 					: offset + memory.offset )
-				, size );
+				, size
+				, context );
 		}
 	}
 
@@ -819,10 +825,12 @@ namespace ashes::d3d11
 				if ( objectSize > 0u
 					&& paramOffset + paramSize > objectOffset )
 				{
+					auto context{ get( m_device )->getImmediateContext() };
 					object->upload( m_data.data()
 						, subresource
 						, offset
-						, size );
+						, size
+						, context );
 				}
 			}
 

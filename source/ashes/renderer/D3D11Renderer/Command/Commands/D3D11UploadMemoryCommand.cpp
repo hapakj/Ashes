@@ -27,7 +27,8 @@ namespace ashes::d3d11
 		get( m_memory->deviceMemory )->updateUpload( *m_memory
 			, m_range.first
 			, m_range.second
-			, m_subresource );
+			, m_subresource
+			, context.context );
 	}
 
 	CommandPtr UploadMemoryCommand::clone()const
