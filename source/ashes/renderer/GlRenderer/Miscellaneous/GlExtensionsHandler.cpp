@@ -102,8 +102,11 @@ namespace ashes::gl
 			{
 				m_shaderVersion = 130;
 			}
+
+			//assert( false );
 		}
 
+#if 0
 		if ( auto const * cextensions = reinterpret_cast< char const * >( getString( GL_INFO_EXTENSIONS ) ) )
 		{
 			std::string extensions = cextensions;
@@ -111,8 +114,11 @@ namespace ashes::gl
 			std::copy( std::istream_iterator< std::string >( stream ),
 				std::istream_iterator< std::string >(),
 				std::back_inserter( m_deviceExtensionNames ) );
+
+			assert( false );
 		}
 		else
+#endif
 		{
 			int max = 0;
 			getIntegerv( GL_INFO_NUM_EXTENSIONS, &max );
@@ -121,6 +127,8 @@ namespace ashes::gl
 			{
 				m_deviceExtensionNames.emplace_back( reinterpret_cast< char const * >( getStringi( GL_INFO_EXTENSIONS, i ) ) );
 			}
+
+			//assert( false );
 		}
 		
 
@@ -162,6 +170,15 @@ namespace ashes::gl
 		m_features.hasStorageBuffers = findAll( { ARB_compute_shader, ARB_gpu_shader5, ARB_buffer_storage, ARB_shader_image_load_store, ARB_shader_storage_buffer_object } );
 		m_features.supportsPersistentMapping = true;
 		m_features.maxShaderLanguageVersion = m_shaderVersion;
+
+		//
+		// __debugbreak();
+
+		//printf( "hello picsak" );
+
+//		assert( false );
+
+		//exit( 0 );
 	}
 
 	bool ExtensionsHandler::find( VkExtensionProperties const & extension )const

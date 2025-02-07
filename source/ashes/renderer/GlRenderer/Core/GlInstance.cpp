@@ -107,6 +107,8 @@ namespace ashes::gl
 		, m_enabledExtensions{ convert( createInfo.ppEnabledExtensionNames, createInfo.enabledExtensionCount ) }
 		, m_window{ new gl::RenderWindow( MinMajor, MinMinor, "GlInstance" ) }
 	{
+		// hmm ez itt mi?
+
 		m_extensions.initialise();
 		m_features = m_extensions.getFeatures();
 		m_hasViewportArray = m_extensions.find( ARB_viewport_array );

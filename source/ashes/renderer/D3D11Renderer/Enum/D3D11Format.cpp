@@ -898,4 +898,9 @@ namespace ashes::d3d11
 			return VK_FORMAT_R8G8B8A8_UNORM;
 		}
 	}
+
+	DXGI_FORMAT fixUpDXGITextureFormat( D3D_FEATURE_LEVEL featureLevel, DXGI_FORMAT fmt )noexcept
+	{
+		return featureLevel >= D3D_FEATURE_LEVEL_10_0 ? getDxgiFormatGroup( fmt ) : fmt;
+	}
 }

@@ -897,6 +897,14 @@ namespace ashes::gl
 		m_glFeatures.hasViewportArrays = find( ARB_viewport_array );
 		m_glFeatures.hasProgramInterfaceQuery = find( ARB_program_interface_query );
 
+		assert(m_glFeatures.has420PackExtensions );
+		assert(m_glFeatures.hasCopyImage );
+		assert(m_glFeatures.hasProgramPipelines );
+		assert(m_glFeatures.hasTextureStorage );
+		assert(m_glFeatures.hasTextureViews );
+		assert(m_glFeatures.hasViewportArrays );
+		assert(m_glFeatures.hasProgramInterfaceQuery );
+
 		ContextLock context{ get( m_instance )->getCurrentContext() };
 		doInitialiseMemoryProperties( context );
 		doInitialiseFeatures( context );
@@ -906,6 +914,9 @@ namespace ashes::gl
 		doInitialisePortability();
 		doInitialiseDriverProperties();
 		doInitialiseInlineUniformBlock( context );
+
+		//
+		//__debugbreak();
 	}
 
 	void PhysicalDevice::doInitialiseFeatures( ContextLock const & context )

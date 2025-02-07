@@ -13,5 +13,6 @@ namespace ashes::d3d11
 	DXGI_FORMAT getRTVFormat( VkFormat const & format )noexcept;
 	DXGI_FORMAT getUAVFormat( VkFormat const & format )noexcept;
 	DXGI_FORMAT getBufferFormat( VkFormat const & format )noexcept;
+	DXGI_FORMAT fixUpDXGITextureFormat( D3D_FEATURE_LEVEL featureLevel, DXGI_FORMAT fmt )noexcept;
 	VkFormat getVkFormat( DXGI_FORMAT const & format )noexcept;
 }

@@ -114,6 +114,8 @@ namespace ashes::gl
 			throw ashes::BaseException{ "Couldn't create OpenGL context" };
 		}
 
+		//assert( false );
+
 		return context;
 	}
 
@@ -129,12 +131,16 @@ namespace ashes::gl
 			m_hDC = ::GetDC( m_hWnd );
 			m_hContext = createContext( m_hDC, m_pfd.pfd );
 			wglMakeCurrent( m_hDC, m_hContext );
+
+			//assert( false );
 		}
 		catch ( std::exception & )
 		{
 			doCleanup();
 			throw;
 		}
+
+		
 	}
 
 	RenderWindow::~RenderWindow()noexcept

@@ -142,11 +142,15 @@ namespace ashes::gl
 	{
 		if ( get( get( context.getDevice() )->getBlitSrcFbo() )->getInternal() == GL_INVALID_INDEX )
 		{
+			__debugbreak();
+
 			glLogCall( context
 				, glGenFramebuffers
 				, 1
 				, &get( get( context.getDevice() )->getBlitSrcFbo() )->getInternal() );
 		}
+
+		//__debugbreak();
 
 		glLogCall( context
 			, glBindFramebuffer
@@ -159,11 +163,15 @@ namespace ashes::gl
 	{
 		if ( get( get( context.getDevice() )->getBlitDstFbo() )->getInternal() == GL_INVALID_INDEX )
 		{
+			__debugbreak();
+
 			glLogCall( context
 				, glGenFramebuffers
 				, 1
 				, &get( get( context.getDevice() )->getBlitDstFbo() )->getInternal() );
 		}
+
+		//__debugbreak();
 
 		glLogCall( context
 			, glBindFramebuffer

@@ -145,6 +145,12 @@ namespace ashes::d3d11
 		desc.MinLOD = createInfo.minLod;
 		desc.MaxLOD = createInfo.maxLod;
 		desc.MipLODBias = createInfo.mipLodBias;
+
+		if ( get( device )->getFeatureLevel() <= D3D_FEATURE_LEVEL_9_3 )
+		{
+			desc.MaxLOD = FLT_MAX;
+		}
+
 		auto hr = d3ddevice->CreateSamplerState( &desc, &m_sampler );
 
 		if ( checkError( device, hr, "CreateSamplerState" ) )

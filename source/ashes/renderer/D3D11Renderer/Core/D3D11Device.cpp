@@ -211,15 +211,21 @@ namespace ashes::d3d11
 		return DeviceContextLock{ this };
 	}
 
+#define LOCK_FIX 1
+
 	ID3D11DeviceContext * Device::lockImmediateContext()const
 	{
+#if !LOCK_FIX
 		m_mtxDeviceContext.lock();
+#endif
 		return m_deviceContext;
 	}
 
 	void Device::unlockImmediateContext()const noexcept
 	{
+#if !LOCK_FIX
 		m_mtxDeviceContext.unlock();
+#endif
 	}
 
 	bool Device::hasExtension( std::string_view extension )const

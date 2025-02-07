@@ -523,6 +523,7 @@ namespace ashes::gl
 		explicit CmdT( GlFrameBufferTarget target )
 			: target{ target }
 		{
+			__debugbreak();
 		}
 
 		Command cmd{ makeCommand< CmdT >( OpType::eBindSrcFramebuffer ) };

@@ -291,9 +291,19 @@ namespace ashes::d3d11
 				desc.Usage = getBufferUsage( m_propertyFlags, m_bufferTargets );
 				desc.BindFlags = getBindFlags( m_bufferTargets );
 				desc.CPUAccessFlags = getCpuBufferAccessFlags( m_propertyFlags, m_bufferTargets );
+
 				desc.MiscFlags = ( checkFlag( m_bufferTargets, VK_BUFFER_USAGE_INDIRECT_BUFFER_BIT )
 					? D3D11_RESOURCE_MISC_DRAWINDIRECT_ARGS
 					: 0u );
+
+				auto featureLevel = get( device )->getFeatureLevel();
+
+				if ( featureLevel < D3D_FEATURE_LEVEL_11_0 )
+				{
+					desc.MiscFlags |= checkFlag( m_bufferTargets, VK_BUFFER_USAGE_STORAGE_BUFFER_BIT )
+						? D3D11_RESOURCE_MISC_BUFFER_ALLOW_RAW_VIEWS : 0u;
+				}
+
 				desc.StructureByteStride = 0;
 
 				auto hr = d3ddevice->CreateBuffer( &desc, nullptr, &result );
@@ -378,8 +388,10 @@ namespace ashes::d3d11
 			, VkImageCreateInfo const & createInfo
 			, D3D11_TEXTURE1D_DESC & desc )const
 		{
+			auto featureLevel = get( device )->getFeatureLevel();
+
 			desc.Width = createInfo.extent.width;
-			desc.Format = getDxgiFormatGroup( getTextureFormat( createInfo.format ) );
+			desc.Format = fixUpDXGITextureFormat( featureLevel, getTextureFormat( createInfo.format ) );
 			desc.ArraySize = createInfo.arrayLayers;
 			desc.Usage = getImageUsage( m_propertyFlags, m_usage );
 			desc.CPUAccessFlags = getCpuImageAccessFlags( m_propertyFlags, m_usage );
@@ -387,7 +399,7 @@ namespace ashes::d3d11
 			desc.BindFlags = mem::getBindFlags( createInfo, m_propertyFlags );
 			desc.MiscFlags = mem::getMiscFlags( createInfo );
 
-			if ( get( device )->getFeatureLevel() < D3D_FEATURE_LEVEL_11_0 )
+			if ( featureLevel < D3D_FEATURE_LEVEL_11_0 )
 			{
 				desc.BindFlags &= ~D3D11_BIND_UNORDERED_ACCESS;
 			}
@@ -463,10 +475,11 @@ namespace ashes::d3d11
 			, VkImageCreateInfo const & createInfo
 			, D3D11_TEXTURE2D_DESC & desc )const
 		{
+			auto featureLevel = get( device )->getFeatureLevel();
 			auto d3ddevice = get( device )->getDevice();
 			desc.Width = createInfo.extent.width;
 			desc.Height = createInfo.extent.height;
-			desc.Format = getDxgiFormatGroup( getTextureFormat( createInfo.format ) );
+			desc.Format = fixUpDXGITextureFormat( featureLevel, getTextureFormat( createInfo.format ) );
 			desc.ArraySize = createInfo.arrayLayers;
 			desc.Usage = getImageUsage( m_propertyFlags, m_usage );
 			desc.CPUAccessFlags = getCpuImageAccessFlags( m_propertyFlags, m_usage );
@@ -488,7 +501,7 @@ namespace ashes::d3d11
 				}
 			}
 
-			if ( get( device )->getFeatureLevel() < D3D_FEATURE_LEVEL_11_0 )
+			if ( featureLevel < D3D_FEATURE_LEVEL_11_0 )
 			{
 				desc.BindFlags &= ~D3D11_BIND_UNORDERED_ACCESS;
 			}
@@ -564,17 +577,19 @@ namespace ashes::d3d11
 			, VkImageCreateInfo const & createInfo
 			, D3D11_TEXTURE3D_DESC & desc )const
 		{
+			auto featureLevel = get( device )->getFeatureLevel();
+
 			desc.Width = createInfo.extent.width;
 			desc.Height = createInfo.extent.height;
 			desc.Depth = createInfo.extent.depth;
-			desc.Format = getDxgiFormatGroup( getTextureFormat( createInfo.format ) );
+			desc.Format = fixUpDXGITextureFormat( featureLevel, getTextureFormat( createInfo.format ) );
 			desc.Usage = getImageUsage( m_propertyFlags, m_usage );
 			desc.CPUAccessFlags = getCpuImageAccessFlags( m_propertyFlags, m_usage );
 			desc.MipLevels = createInfo.mipLevels;
 			desc.BindFlags = mem::getBindFlags( createInfo, m_propertyFlags );
 			desc.MiscFlags = mem::getMiscFlags( createInfo );
 
-			if ( get( device )->getFeatureLevel() < D3D_FEATURE_LEVEL_11_0 )
+			if ( featureLevel < D3D_FEATURE_LEVEL_11_0 )
 			{
 				desc.BindFlags &= ~D3D11_BIND_UNORDERED_ACCESS;
 			}

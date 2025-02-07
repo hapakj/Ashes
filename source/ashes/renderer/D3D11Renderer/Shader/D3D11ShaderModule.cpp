@@ -474,6 +474,7 @@ namespace ashes::d3d11
 					{ VK_SHADER_STAGE_VERTEX_BIT, "vs_4_1" },
 					{ VK_SHADER_STAGE_GEOMETRY_BIT, "gs_4_1" },
 					{ VK_SHADER_STAGE_FRAGMENT_BIT, "ps_4_1" },
+					{ VK_SHADER_STAGE_COMPUTE_BIT, "cs_4_1" },
 				}
 			},
 			{ 
@@ -482,26 +483,28 @@ namespace ashes::d3d11
 					{ VK_SHADER_STAGE_VERTEX_BIT, "vs_4_0" },
 					{ VK_SHADER_STAGE_GEOMETRY_BIT, "gs_4_0" },
 					{ VK_SHADER_STAGE_FRAGMENT_BIT, "ps_4_0" },
+					{ VK_SHADER_STAGE_COMPUTE_BIT, "cs_4_0" },
 				}
 			},
 			{ 
 				D3D_FEATURE_LEVEL_9_3,
 				{
-					{ VK_SHADER_STAGE_VERTEX_BIT, "vs_3_0" },
-					{ VK_SHADER_STAGE_FRAGMENT_BIT, "ps_3_0" },
+					{ VK_SHADER_STAGE_VERTEX_BIT, "vs_4_0_level_9_3" },
+					{ VK_SHADER_STAGE_FRAGMENT_BIT, "ps_4_0_level_9_3" },
 				}
 			},
 			{ 
 				D3D_FEATURE_LEVEL_9_2,
 				{
-					{ VK_SHADER_STAGE_VERTEX_BIT, "vs_2_0" },
-					{ VK_SHADER_STAGE_FRAGMENT_BIT, "ps_2_0" },
+					{ VK_SHADER_STAGE_VERTEX_BIT, "vs_4_0_level_9_1" },
+					{ VK_SHADER_STAGE_FRAGMENT_BIT, "ps_4_0_level_9_1" },
 				}
 			},
 			{ 
 				D3D_FEATURE_LEVEL_9_1,
 				{
-					{ VK_SHADER_STAGE_VERTEX_BIT, "vs_1_1" },
+					{ VK_SHADER_STAGE_VERTEX_BIT, "vs_4_0_level_9_1" },
+					{ VK_SHADER_STAGE_FRAGMENT_BIT, "ps_4_0_level_9_1" },
 				}
 			}
 		};
@@ -598,12 +601,17 @@ namespace ashes::d3d11
 		switch ( m_stage )
 		{
 		case VK_SHADER_STAGE_VERTEX_BIT:
-			hr = dxDevice->CreateVertexShader( reinterpret_cast< DWORD * >( m_compiled->GetBufferPointer() )
-				, m_compiled->GetBufferSize()
+		{		
+			auto bufferPointer = reinterpret_cast< DWORD * >( m_compiled->GetBufferPointer() );
+			auto bufferSize = m_compiled->GetBufferSize();
+
+			hr = dxDevice->CreateVertexShader( bufferPointer
+				, bufferSize
 				, nullptr
 				, &m_shader.vertex );
 			dxDebugName( m_shader.vertex, VertexShader );
 			break;
+		}
 
 		case VK_SHADER_STAGE_GEOMETRY_BIT:
 			hr = dxDevice->CreateGeometryShader( reinterpret_cast< DWORD * >( m_compiled->GetBufferPointer() )

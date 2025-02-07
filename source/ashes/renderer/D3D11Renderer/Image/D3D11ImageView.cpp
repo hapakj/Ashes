@@ -64,7 +64,7 @@ namespace ashes::d3d11
 			doCreate3D();
 			break;
 		case VK_IMAGE_VIEW_TYPE_CUBE:
-			if ( image->getLayerCount() > 1 )
+			if ( image->getLayerCount() > 6 )
 			{
 				doCreateCubeArray();
 			}

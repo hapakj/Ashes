@@ -99,6 +99,8 @@ namespace ashes::gl
 				stream << "OpenGL Error, on function: " << text;
 				stream << ", ID: 0x" << std::hex << errorCode << " (" << getErrorName( errorCode, GL_DEBUG_TYPE_ERROR ) << ")";
 				logError( stream.str().c_str() );
+
+				__debugbreak();
 			}
 
 			context->glGetError();

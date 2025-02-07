@@ -169,7 +169,7 @@ namespace ashes::gl
 			}
 
 			ByteArray result;
-			result.resize( size );
+			result.resize( 4 * size );
 			return result;
 		}
 	}

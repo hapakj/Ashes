@@ -291,6 +291,8 @@ namespace ashes::gl::gl3
 		, GLuint program )
 	{
 		InterfaceBlocksLayout result;
+
+		//assert( false );
 		getInterfaceInfos( context
 			, program
 			, GL_ACTIVE_UNIFORM_BLOCKS

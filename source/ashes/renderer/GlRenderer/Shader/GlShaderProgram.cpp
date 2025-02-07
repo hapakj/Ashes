@@ -221,6 +221,8 @@ namespace ashes::gl
 
 		if ( hasProgramPipelines( m_device ) )
 		{
+			//assert( false );
+
 			doInitProgramPipeline( context
 				, descs
 				, layout
@@ -229,6 +231,8 @@ namespace ashes::gl
 		}
 		else
 		{
+			//assert( false );
+
 			doInitShaderProgram( context
 				, pipeline
 				, descs );

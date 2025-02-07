@@ -266,6 +266,12 @@ namespace ashes::d3d11
 		auto d3ddevice = get( device )->getDevice();
 		auto blendDesc = convert( m_colorBlendState );
 
+		// 9_2 or 9_3?
+		if ( get( device )->getFeatureLevel() <= D3D_FEATURE_LEVEL_9_3 )
+		{
+			blendDesc.IndependentBlendEnable = false;
+		}
+
 		if ( HRESULT hr = d3ddevice->CreateBlendState( &blendDesc, &m_bdState );
 			!checkError( device, hr, "CreateBlendState" ) )
 		{
@@ -287,6 +293,12 @@ namespace ashes::d3d11
 		auto d3ddevice = get( device )->getDevice();
 		auto rasterizerDesc = convert( m_rasterizationState
 			, m_multisampleState );
+
+		// fixup DepthClipEnable since feature level <= 9.3 it must be always enable
+		if ( get( device )->getFeatureLevel() <= D3D_FEATURE_LEVEL_9_3 )
+		{
+			rasterizerDesc.DepthClipEnable = true;
+		}
 
 		if ( auto hr = d3ddevice->CreateRasterizerState( &rasterizerDesc, &m_rsState );
 			!checkError( device, hr, "CreateRasterizerState" ) )

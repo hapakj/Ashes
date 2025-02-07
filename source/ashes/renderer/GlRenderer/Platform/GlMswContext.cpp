@@ -246,6 +246,9 @@ namespace ashes::gl
 
 	void MswContext::preInitialise( int reqMajor, int reqMinor )
 	{
+
+		//throw ashes::BaseException{ "hapakj" };
+
 		doSelectFormat();
 		auto & extensions = get( instance )->getExtensions();
 		m_major = std::max( reqMajor, int( extensions.getMajor() ) );
@@ -256,6 +259,9 @@ namespace ashes::gl
 		{
 			throw ashes::BaseException{ "Couldn't create preliminary context: " + getLastErrorText() };
 		}
+
+
+		//assert( false );
 
 		doLoadSystemFunctions();
 	}
@@ -316,6 +322,7 @@ namespace ashes::gl
 
 	void MswContext::swapBuffers()const
 	{
+		//__debugbreak();
 		::SwapBuffers( m_hDC );
 	}
 
@@ -408,6 +415,8 @@ namespace ashes::gl
 			int( ContextParameter::WGL_CONTEXT_PROFILE_MASK_ARB ), GL_CONTEXT_CREATION_DEFAULT_MASK,
 			0
 		};
+
+		//assert( false );
 
 		enable();
 
