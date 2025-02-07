@@ -614,6 +614,29 @@ namespace ashes::d3d11
 
 	void PhysicalDevice::doInitialiseProperties()
 	{
+		const auto featureLevelToCStr = []( D3D_FEATURE_LEVEL featureLevel )
+			{
+				switch ( featureLevel )
+				{
+				case D3D_FEATURE_LEVEL_12_2: return "FL_12_2";
+				case D3D_FEATURE_LEVEL_12_1: return "FL_12_1";
+				case D3D_FEATURE_LEVEL_12_0: return "FL_12_0";
+
+				case D3D_FEATURE_LEVEL_11_1: return "FL_11_1";
+				case D3D_FEATURE_LEVEL_11_0: return "FL_11_0";
+
+				case D3D_FEATURE_LEVEL_10_1: return "FL_10_1";
+				case D3D_FEATURE_LEVEL_10_0: return "FL_10_0";
+
+				case D3D_FEATURE_LEVEL_9_3: return "FL_9_3";
+				case D3D_FEATURE_LEVEL_9_2: return "FL_9_2";
+				case D3D_FEATURE_LEVEL_9_1: return "FL_9_1";
+
+				case D3D_FEATURE_LEVEL_1_0_CORE: return "FL_1_0_CORE";
+				}
+				return "FL_UNKNOWN";
+			};
+
 		if ( DXGI_ADAPTER_DESC2 adapterDesc{};
 			m_adapterInfo.adapter2 && SUCCEEDED( m_adapterInfo.adapter2->GetDesc2( &adapterDesc ) ) )
 		{
@@ -621,15 +644,24 @@ namespace ashes::d3d11
 				, toString( adapterDesc.Description ).c_str()
 				, sizeof( m_properties.deviceName ) - 1u );
 			strncat( m_properties.deviceName
-				, " (d3d11)"
+				, " (d3d11 "
 				, sizeof( m_properties.deviceName ) - 1u );
+
+			strncat( m_properties.deviceName
+				, featureLevelToCStr( m_adapterInfo.featureLevel )
+				, sizeof( m_properties.deviceName ) - 1u );
+
+			strncat( m_properties.deviceName
+				, ")"
+				, sizeof( m_properties.deviceName ) - 1u );
+
 			m_properties.deviceID = adapterDesc.DeviceId;
 			m_properties.vendorID = adapterDesc.VendorId;
 			m_properties.driverVersion = adapterDesc.Revision;
 		}
 
-		auto major = uint32_t( m_adapterInfo.featureLevel >> 12 );
-		auto minor = uint32_t( ( m_adapterInfo.featureLevel >> 8 ) & 0x01 );
+		uint32_t major = 1;
+		uint32_t minor = 0;
 		m_properties.apiVersion = ( major << 22 ) | ( minor << 12 );
 		m_properties.deviceType = VK_PHYSICAL_DEVICE_TYPE_DISCRETE_GPU;
 
