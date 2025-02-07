@@ -27,7 +27,8 @@ namespace ashes::d3d11
 		get( m_memory->deviceMemory )->updateDownload( *m_memory
 			, m_range.first
 			, m_range.second
-			, m_subresource );
+			, m_subresource
+		    , context.context );
 	}
 
 	CommandPtr DownloadMemoryCommand::clone()const

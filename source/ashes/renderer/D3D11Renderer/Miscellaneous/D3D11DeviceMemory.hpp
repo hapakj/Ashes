@@ -43,7 +43,8 @@ namespace ashes::d3d11
 		void download( uint8_t * data
 			, UINT subresource
 			, VkDeviceSize offset
-			, VkDeviceSize size )const;
+			, VkDeviceSize size
+		    , const DeviceContextLock & context )const;
 
 	public:
 		VkDevice device{};
@@ -87,7 +88,8 @@ namespace ashes::d3d11
 		void updateDownload( ObjectMemory const & memory
 			, VkDeviceSize offset
 			, VkDeviceSize size
-			, UINT subresource )const;
+			, UINT subresource
+		    , const DeviceContextLock & context )const;
 		void updateUpload( VkDeviceSize offset
 			, VkDeviceSize size
 			, UINT subresource )const;
