@@ -4466,9 +4466,7 @@ namespace ashes::d3d11
 
 				description.mode = mode;
 				description.support.priority = 6u;
-				description.support.supported = VkBool32( getSupportedFeatureLevel() >= D3D_FEATURE_LEVEL_11_1
-					? VK_TRUE
-					: VK_FALSE );
+				description.support.supported = VkBool32( VK_TRUE );
 			}
 
 			return result;

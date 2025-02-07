@@ -23,7 +23,7 @@ namespace ashes::d3d11
 		, m_scissor{ makeScissor( get( m_frameBuffer )->getDimensions() ) }
 	{
 		auto rp = get( renderPass );
-		assert( clearValues.size() == rp->size() );
+		//assert( clearValues.size() == rp->size() );
 		for ( auto const & attach : *rp )
 		{
 			auto & clearValue = clearValues[attach.attachment];

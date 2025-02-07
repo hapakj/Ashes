@@ -87,7 +87,9 @@ namespace ashes::d3d11
 
 		bool isStorage()const noexcept
 		{
-			return checkFlag( m_createInfo.usage, VK_IMAGE_USAGE_STORAGE_BIT );
+			bool b = checkFlag( m_createInfo.usage, VK_IMAGE_USAGE_STORAGE_BIT );
+			//assert( !b );
+			return b;
 		}
 
 		VkDeviceMemory getMemory()const noexcept

@@ -64,8 +64,9 @@ namespace ashes::d3d11
 			doCreate3D();
 			break;
 		case VK_IMAGE_VIEW_TYPE_CUBE:
-			if ( image->getLayerCount() > 1 )
+			if ( image->getLayerCount() > 6 )
 			{
+				//assert( false );
 				doCreateCubeArray();
 			}
 			else
@@ -74,6 +75,7 @@ namespace ashes::d3d11
 			}
 			break;
 		case VK_IMAGE_VIEW_TYPE_CUBE_ARRAY:
+			assert( false );
 			doCreateCubeArray();
 			break;
 		default:
@@ -552,6 +554,8 @@ namespace ashes::d3d11
 
 	void ImageView::doCreateCubeArray()
 	{
+		assert( false );
+
 		auto device = get( m_device )->getDevice();
 		auto image = get( m_createInfo.image );
 
