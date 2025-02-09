@@ -219,26 +219,20 @@ namespace ashes::gl
 		bool doHasEnabledExtensions( StringArray const & available
 			, ashes::ArrayView< char const * const > const & extensions )
 		{
-			try
+			for ( auto & extension : extensions )
 			{
-				for ( auto & extension : extensions )
-				{
-					if ( available.end() == std::find_if( available.begin()
-						, available.end()
-						, [&extension]( std::string const & lookup )
-						{
-							return lookup == std::string{ extension };
-						} ) )
+				if ( available.end() == std::find_if( available.begin()
+					, available.end()
+					, [&extension]( std::string const & lookup )
 					{
-						throw ExtensionNotPresentException{ extension };
-					}
+						return lookup == std::string{ extension };
+					} ) )
+				{
+					std::cerr << "Ashes (gl) Extension not supported: " << extension << std::endl;
+					return false;
 				}
-				return true;
 			}
-			catch ( ExtensionNotPresentException & )
-			{
-				return false;
-			}
+			return true;
 		}
 	}
 
