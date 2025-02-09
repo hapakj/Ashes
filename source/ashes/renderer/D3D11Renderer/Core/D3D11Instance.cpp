@@ -135,7 +135,8 @@ namespace ashes::d3d11
 			return result;
 		}
 
-		void checkEnabledExtensions( ashes::ArrayView< char const * const > const & extensions )
+		bool checkEnabledExtensions( ashes::ArrayView< char const * const > const & extensions
+			, bool throwExp = true )
 		{
 			auto & available = getSupportedInstanceExtensions( nullptr );
 
@@ -148,22 +149,20 @@ namespace ashes::d3d11
 						return lookup.extensionName == std::string{ extension };
 					} ) )
 				{
-					throw ExtensionNotPresentException{ extension };
+					if ( throwExp )
+					{
+						throw ExtensionNotPresentException{ extension };
+					}
+					std::cerr << "Ashes (d3d11::Instance) Extension not supported: " << extension << std::endl;
+					return false;
 				}
 			}
+			return true;
 		}
 
 		bool hasEnabledExtensions( ashes::ArrayView< char const * const > const & extensions )
 		{
-			try
-			{
-				checkEnabledExtensions( extensions );
-				return true;
-			}
-			catch ( ExtensionNotPresentException & )
-			{
-				return false;
-			}
+			return checkEnabledExtensions( extensions, false );
 		}
 
 		VkApplicationInfo getDefaultApplicationInfo()

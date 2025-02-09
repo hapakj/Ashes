@@ -91,8 +91,9 @@ namespace ashes::d3d11
 			return result;
 		}
 
-		void doCheckEnabledExtensions( VkPhysicalDevice physicalDevice
-			, ashes::ArrayView< char const * const > const & extensions )
+		bool doCheckEnabledExtensions( VkPhysicalDevice physicalDevice
+			, ashes::ArrayView< char const * const > const & extensions
+		    , bool throwExp = true)
 		{
 			auto const & available = get( physicalDevice )->enumerateExtensionProperties();
 
@@ -105,23 +106,21 @@ namespace ashes::d3d11
 						return lookup.extensionName == std::string{ extension };
 					} ) )
 				{
-					throw ExtensionNotPresentException{ extension };
+					if ( throwExp )
+					{
+						throw ExtensionNotPresentException{ extension };
+					}
+					std::cerr << "Ashes (d3d11::Device) Extension not supported: " << extension << std::endl;
+					return false;
 				}
 			}
+			return true;
 		}
 
 		bool doHasEnabledExtensions( VkPhysicalDevice physicalDevice
 			, ashes::ArrayView< char const * const > const & extensions )
 		{
-			try
-			{
-				doCheckEnabledExtensions( physicalDevice, extensions );
-				return true;
-			}
-			catch ( ExtensionNotPresentException & )
-			{
-				return false;
-			}
+			return doCheckEnabledExtensions( physicalDevice, extensions, false );
 		}
 	}
 
