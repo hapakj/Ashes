@@ -4512,14 +4512,14 @@ namespace ashes::d3d11
 			&& get( device )->hasExtension( extension.data() );
 	}
 
-	using InstanceFunctions = std::map< std::string, PFN_vkVoidFunction, std::less<> >;
+	using ObjectFunctions = std::map< std::string, PFN_vkVoidFunction, std::less<> >;
 
 #pragma warning( push )
 #pragma warning( disable: 4191 )
 
-	InstanceFunctions const & getFunctions( VkInstance instance )
+	ObjectFunctions const & getInstanceFunctions( VkInstance instance )
 	{
-		static std::map< VkInstance, InstanceFunctions > functions;
+		static std::map< VkInstance, ObjectFunctions > functions;
 		auto [it, res] = functions.try_emplace( instance );
 
 		if ( res )
@@ -4564,12 +4564,35 @@ namespace ashes::d3d11
 		return it->second;
 	}
 
+	ObjectFunctions const & getDeviceFunctions( VkDevice device )
+	{
+		static std::map< VkDevice, ObjectFunctions > functions;
+		auto [it, res] = functions.try_emplace( device );
+
+		if ( res )
+		{
+			it->second =
+			{
+				{ "vkGetDeviceProcAddr", PFN_vkVoidFunction( vkGetDeviceProcAddr ) },
+#define VK_LIB_DEVICE_FUNCTION( v, x )\
+					{ "vk"#x, checkVersion( device, v ) ? PFN_vkVoidFunction( vk##x ) : PFN_vkVoidFunction( nullptr ) },
+#define VK_LIB_DEVICE_FUNCTION_EXT( v, n, x )\
+					{ "vk"#x, checkVersionExt( device, v, n ) ? PFN_vkVoidFunction( vk##x ) : PFN_vkVoidFunction( nullptr ) },
+#define VK_STATIC_LIB_DEVICE_FUNCTION_EXT( v, n, x )\
+					{ "vk"#x, checkVersionExt( device, v, n ) ? PFN_vkVoidFunction( vk##x ) : PFN_vkVoidFunction( nullptr ) },
+#include <ashes/ashes_functions_list.hpp>
+			};
+		}
+
+		return it->second;
+	}
+
 	PFN_vkVoidFunction VKAPI_CALL vkGetInstanceProcAddr(
 		VkInstance instance,
 		const char* pName )
 	{
 		PFN_vkVoidFunction result{ nullptr };
-		auto & functions = getFunctions( instance );
+		auto & functions = getInstanceFunctions( instance );
 
 		if ( auto it = functions.find( pName );
 			it != functions.end() )
@@ -4585,15 +4608,7 @@ namespace ashes::d3d11
 		const char* pName )
 	{
 		PFN_vkVoidFunction result{ nullptr };
-		static std::map< std::string, PFN_vkVoidFunction, std::less<> > functions
-		{
-			{ "vkGetDeviceProcAddr", PFN_vkVoidFunction( vkGetDeviceProcAddr ) },
-#define VK_LIB_DEVICE_FUNCTION( v, x )\
-			{ "vk"#x, checkVersion( device, v ) ? PFN_vkVoidFunction( vk##x ) : PFN_vkVoidFunction( nullptr ) },
-#define VK_LIB_DEVICE_FUNCTION_EXT( v, n, x )\
-			{ "vk"#x, checkVersionExt( device, v, n ) ? PFN_vkVoidFunction( vk##x ) : PFN_vkVoidFunction( nullptr ) },
-#include <ashes/ashes_functions_list.hpp>
-		};
+		auto & functions = getDeviceFunctions( device );
 
 		if ( auto it = functions.find( pName );
 			it != functions.end() )
